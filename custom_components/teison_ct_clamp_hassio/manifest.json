@@ -4,7 +4,7 @@
   "codeowners": ["@volski"],
   "config_flow": true,
   "documentation": "https://github.com/volski/teison_ct_clamp_hassio",
-  "requirements": ["websockets==10.0"],
+  "requirements": ["websockets"],
   "version": "1.0.0",
   "issue_tracker": "https://github.com/volski/teison_ct_clamp_hassio/issues"
 }
