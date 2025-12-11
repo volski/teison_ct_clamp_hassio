@@ -64,6 +64,7 @@ async def start_websocket_server(hass: HomeAssistant, entry: ConfigEntry, host: 
         _LOGGER.info("Meter client connected from %s", websocket.remote_address)
         try:
             async for message in websocket:
+                _LOGGER.debug("Raw WebSocket message: %s", message)
                 try:
                     msg = json.loads(message)
                     if isinstance(msg, list) and len(msg) >= 4:
