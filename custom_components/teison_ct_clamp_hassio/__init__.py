@@ -46,7 +46,10 @@ async def start_websocket_server(hass: HomeAssistant, entry: ConfigEntry, host: 
     
     entry_data = hass.data[DOMAIN][entry.entry_id]
     
-    async def handle_client(websocket, path):
+    # websockets.serve in current HA expects handlers with a single
+    # websocket argument; the connection path is available as
+    # websocket.path if needed.
+    async def handle_client(websocket):
         """Handle incoming WebSocket connection."""
         _LOGGER.info("Meter client connected from %s", websocket.remote_address)
         try:

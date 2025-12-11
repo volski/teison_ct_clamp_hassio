@@ -18,7 +18,7 @@ class MeterValuesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             # Validate the input
             host = user_input.get(CONF_HOST, "0.0.0.0")
-            port = user_input.get(CONF_PORT, 8080)
+            port = user_input.get(CONF_PORT, 12345)
             
             return self.async_create_entry(
                 title=f"Meter Values ({host}:{port})",
@@ -28,7 +28,7 @@ class MeterValuesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         # Show form
         data_schema = vol.Schema({
             vol.Required(CONF_HOST, default="0.0.0.0"): str,
-            vol.Required(CONF_PORT, default=8080): int,
+            vol.Required(CONF_PORT, default=12345): int,
         })
         
         return self.async_show_form(
