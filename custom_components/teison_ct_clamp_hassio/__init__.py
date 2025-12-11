@@ -19,13 +19,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     
     host = entry.data.get(CONF_HOST, "0.0.0.0")
     port = entry.data.get(CONF_PORT, 8080)
-    
+
     # Store the meter data in hass.data
     hass.data[DOMAIN][entry.entry_id] = {
         "host": host,
         "port": port,
         "meter_data": {},
-        "listeners": []
+        "listeners": [],
+        "server": None,
     }
     
     # Start WebSocket server
@@ -45,7 +46,14 @@ async def start_websocket_server(hass: HomeAssistant, entry: ConfigEntry, host: 
     import websockets
     
     entry_data = hass.data[DOMAIN][entry.entry_id]
-    
+
+    # If a server is already running for this entry, close it first
+    existing_server = entry_data.get("server")
+    if existing_server is not None:
+        existing_server.close()
+        await existing_server.wait_closed()
+        entry_data["server"] = None
+
     # websockets.serve in current HA expects handlers with a single
     # websocket argument; the connection path is available as
     # websocket.path if needed.
@@ -98,5 +106,13 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
+        entry_data = hass.data[DOMAIN].get(entry.entry_id)
+        server = entry_data.get("server") if entry_data else None
+
+        if server is not None:
+            server.close()
+            await server.wait_closed()
+
+        hass.data[DOMAIN].pop(entry.entry_id, None)
+
     return unload_ok
