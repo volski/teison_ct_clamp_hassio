@@ -69,7 +69,22 @@ async def start_websocket_server(hass: HomeAssistant, entry: ConfigEntry, host: 
                     msg = json.loads(message)
                     if isinstance(msg, list) and len(msg) >= 4:
                         msg_type, msg_id, action, payload = msg[0], msg[1], msg[2], msg[3]
-                        
+
+                        # Handle OCPP BootNotification so the charger will continue
+                        if action == "BootNotification":
+                            _LOGGER.debug("Received BootNotification: %s", payload)
+                            boot_response = [
+                                3,
+                                msg_id,
+                                {
+                                    "status": "Accepted",
+                                    "currentTime": datetime.now(timezone.utc).isoformat(),
+                                    "interval": 300,
+                                },
+                            ]
+                            await websocket.send(json.dumps(boot_response))
+                            continue
+
                         if action == "MeterValues":
                             _LOGGER.debug("Received MeterValues: %s", payload)
                             # Store meter data and update timestamp
