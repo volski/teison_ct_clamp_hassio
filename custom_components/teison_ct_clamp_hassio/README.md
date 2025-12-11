@@ -1,4 +1,4 @@
-# Meter Values Component for Home Assistant
+# teison_ct_clamp_hassio Component for Home Assistant
 
 A custom Home Assistant component that listens for meter data via WebSocket and exposes power, voltage, and current readings as sensors.
 
@@ -14,14 +14,14 @@ A custom Home Assistant component that listens for meter data via WebSocket and 
 
 ## Installation
 
-1. Copy the `meter_values` folder to your Home Assistant `custom_components` directory:
+1. Copy the `teison_ct_clamp_hassio` folder to your Home Assistant `custom_components` directory:
    ```
-   ~/.homeassistant/custom_components/meter_values
+   ~/.homeassistant/custom_components/teison_ct_clamp_hassio
    ```
 
 2. Restart Home Assistant
 
-3. Go to Settings > Devices & Services > Create Integration and search for "Meter Values"
+3. Go to Settings > Devices & Services > Create Integration and search for "teison_ct_clamp_hassio"
 
 4. Configure the host (default `0.0.0.0`) and port (default `8080`)
 

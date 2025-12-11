@@ -8,7 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = "meter_values"
+DOMAIN = "teison_ct_clamp_hassio"
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -70,7 +70,7 @@ class MeterValuesSensor(SensorEntity):
     def native_value(self):
         """Return the state of the sensor."""
         try:
-            entry_data = self.hass.data["meter_values"][self.entry.entry_id]
+            entry_data = self.hass.data[DOMAIN][self.entry.entry_id]
             meter_data = entry_data.get("meter_data", {})
             
             if not meter_data.get("meterValue"):

@@ -4,7 +4,7 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import callback
 
-DOMAIN = "meter_values"
+DOMAIN = "teison_ct_clamp_hassio"
 
 class MeterValuesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Meter Values."""

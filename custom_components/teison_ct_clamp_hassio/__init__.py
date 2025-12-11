@@ -10,7 +10,7 @@ import websockets
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = "meter_values"
+DOMAIN = "teison_ct_clamp_hassio"
 PLATFORMS = ["sensor"]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

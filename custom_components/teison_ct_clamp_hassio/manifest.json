@@ -1,0 +1,10 @@
+{
+  "domain": "teison_ct_clamp_hassio",
+  "name": "teison_ct_clamp_hassio",
+  "codeowners": ["@user"],
+  "config_flow": true,
+  "documentation": "https://github.com/volski/teison_ct_clamp_hassio",
+  "requirements": ["websockets==10.0"],
+  "version": "1.0.0",
+  "issue_tracker": "https://github.com/volski/teison_ct_clamp_hassio/issues"
+}
