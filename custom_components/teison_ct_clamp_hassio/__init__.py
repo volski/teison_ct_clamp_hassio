@@ -2,6 +2,7 @@
 import logging
 import json
 import asyncio
+from datetime import datetime, timezone
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT
@@ -18,13 +19,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
     
     host = entry.data.get(CONF_HOST, "0.0.0.0")
-    port = entry.data.get(CONF_PORT, 8080)
+    port = entry.data.get(CONF_PORT, 12345)
 
     # Store the meter data in hass.data
     hass.data[DOMAIN][entry.entry_id] = {
         "host": host,
         "port": port,
         "meter_data": {},
+        "last_update": None,
         "listeners": [],
         "server": None,
     }
@@ -69,8 +71,9 @@ async def start_websocket_server(hass: HomeAssistant, entry: ConfigEntry, host: 
                         
                         if action == "MeterValues":
                             _LOGGER.debug("Received MeterValues: %s", payload)
-                            # Store meter data
+                            # Store meter data and update timestamp
                             entry_data["meter_data"] = payload
+                            entry_data["last_update"] = datetime.now(timezone.utc)
                             
                             # Notify listeners (sensors) about update
                             for listener in entry_data.get("listeners", []):

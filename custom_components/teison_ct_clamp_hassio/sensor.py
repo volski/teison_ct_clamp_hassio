@@ -1,5 +1,6 @@
 """Sensor platform for Meter Values."""
 import logging
+from datetime import datetime, timedelta, timezone
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import UnitOfElectricCurrent, UnitOfElectricPotential, UnitOfPower, UnitOfEnergy
 from homeassistant.core import HomeAssistant, callback
@@ -72,6 +73,15 @@ class MeterValuesSensor(SensorEntity):
         try:
             entry_data = self.hass.data[DOMAIN][self.entry.entry_id]
             meter_data = entry_data.get("meter_data", {})
+
+            # Reset sensors if data is stale (no update for 30 seconds)
+            last_update = entry_data.get("last_update")
+            if last_update is None:
+                return None
+
+            # last_update is stored as an aware UTC datetime
+            if datetime.now(timezone.utc) - last_update > timedelta(seconds=30):
+                return None
             
             if not meter_data.get("meterValue"):
                 return None

@@ -23,7 +23,7 @@ A custom Home Assistant component that listens for meter data via WebSocket and 
 
 3. Go to Settings > Devices & Services > Create Integration and search for "teison_ct_clamp_hassio"
 
-4. Configure the host (default `0.0.0.0`) and port (default `8080`)
+4. Configure the host (default `0.0.0.0`) and port (default `12345`)
 
 ## Data Format
 
