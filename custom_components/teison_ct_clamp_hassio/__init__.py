@@ -14,6 +14,9 @@ _LOGGER = logging.getLogger(__name__)
 DOMAIN = "teison_ct_clamp_hassio"
 PLATFORMS = ["sensor"]
 
+# Request more frequent meter updates from the client (seconds)
+DEFAULT_UPDATE_INTERVAL = 3
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Meter Values from a config entry."""
     hass.data.setdefault(DOMAIN, {})
@@ -79,7 +82,7 @@ async def start_websocket_server(hass: HomeAssistant, entry: ConfigEntry, host: 
                                 {
                                     "status": "Accepted",
                                     "currentTime": datetime.now(timezone.utc).isoformat(),
-                                    "interval": 300,
+                                    "interval": DEFAULT_UPDATE_INTERVAL,
                                 },
                             ]
                             await websocket.send(json.dumps(boot_response))
