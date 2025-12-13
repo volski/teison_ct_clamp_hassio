@@ -56,6 +56,7 @@ class MeterValuesSensor(SensorEntity):
         self._attr_native_unit_of_measurement = unit
         self._attr_icon = icon
         self._state = None
+        self._last_value = None
     
     @property
     def name(self) -> str:
@@ -77,14 +78,15 @@ class MeterValuesSensor(SensorEntity):
             # Reset sensors if data is stale (no update for 30 seconds)
             last_update = entry_data.get("last_update")
             if last_update is None:
-                return None
+                return self._last_value
 
             # last_update is stored as an aware UTC datetime
             if datetime.now(timezone.utc) - last_update > timedelta(seconds=30):
+                self._last_value = None
                 return None
             
             if not meter_data.get("meterValue"):
-                return None
+                return self._last_value
             
             meter_value = meter_data["meterValue"][0]
             sampled_values = meter_value.get("sampledValue", [])
@@ -93,34 +95,40 @@ class MeterValuesSensor(SensorEntity):
             if self.sensor_type == "voltage":
                 for sv in sampled_values:
                     if sv.get("measurand") == "Voltage" and not sv.get("phase"):
-                        return float(sv.get("value", 0))
+                        self._last_value = float(sv.get("value", 0))
+                        return self._last_value
             
             elif self.sensor_type == "power":
                 for sv in sampled_values:
                     if sv.get("measurand") == "Power.Active.Import":
-                        return float(sv.get("value", 0))
+                        self._last_value = float(sv.get("value", 0))
+                        return self._last_value
             
             elif self.sensor_type == "energy":
                 for sv in sampled_values:
                     if sv.get("measurand") == "Energy.Active.Import.Register":
-                        return float(sv.get("value", 0))
+                        self._last_value = float(sv.get("value", 0))
+                        return self._last_value
             
             elif self.sensor_type == "current_l1":
                 for sv in sampled_values:
                     if sv.get("measurand") == "Current.Import" and sv.get("phase") == "L1":
-                        return float(sv.get("value", 0))
+                        self._last_value = float(sv.get("value", 0))
+                        return self._last_value
             
             elif self.sensor_type == "current_l2":
                 for sv in sampled_values:
                     if sv.get("measurand") == "Current.Import" and sv.get("phase") == "L2":
-                        return float(sv.get("value", 0))
+                        self._last_value = float(sv.get("value", 0))
+                        return self._last_value
             
             elif self.sensor_type == "current_l3":
                 for sv in sampled_values:
                     if sv.get("measurand") == "Current.Import" and sv.get("phase") == "L3":
-                        return float(sv.get("value", 0))
+                        self._last_value = float(sv.get("value", 0))
+                        return self._last_value
         
         except Exception as e:
             _LOGGER.error("Error extracting sensor value: %s", e)
         
-        return None
+        return self._last_value
