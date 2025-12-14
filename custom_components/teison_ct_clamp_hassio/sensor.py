@@ -75,13 +75,13 @@ class MeterValuesSensor(SensorEntity):
             entry_data = self.hass.data[DOMAIN][self.entry.entry_id]
             meter_data = entry_data.get("meter_data", {})
 
-            # Reset sensors if data is stale (no update for 30 seconds)
+            # Reset sensors if data is stale (no update for 60 seconds)
             last_update = entry_data.get("last_update")
             if last_update is None:
                 return self._last_value
 
             # last_update is stored as an aware UTC datetime
-            if datetime.now(timezone.utc) - last_update > timedelta(seconds=30):
+            if datetime.now(timezone.utc) - last_update > timedelta(seconds=60):
                 self._last_value = None
                 return None
             
